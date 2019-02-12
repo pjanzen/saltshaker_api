@@ -1,16 +1,16 @@
 # Saltshaker API
 
-Saltshaker是基于saltstack开发的以Web方式进行配置管理的运维工具，简化了saltstack的日常使用，丰富了saltstack的功能，支持多Master的管理。此项目为Saltshaker的后端Restful API，需要结合前端项目[Saltshaker_frontend](https://github.com/yueyongyue/saltshaker_frontend)。
-## 架构图
+Saltshaker is a Web-based configuration management management tool developed by Saltstack. It simplifies the daily use of saltstack, enriches the functions of saltstack, and supports multi-master management. This project is Saltshaker's backend Restful API, which needs to be combined with front-end projects.
+## Architecture diagram
 ![image](https://github.com/yueyongyue/saltshaker_api/blob/master/screenshots/Saltshaker_Plus.jpg)
 ## Dashboard
 ![image](https://github.com/yueyongyue/saltshaker_api/blob/master/screenshots/dashboard.png)
 
-## 指导手册
+## Installation manual
 
-- [要求](#要求)
-- [安装](#安装)
-- [配置Salt Master](#配置salt-master)
+- [required](#required)
+- [installation](#installation)
+- [Configure Salt Master](#configure-salt-master)
 - [Restful API](#restful-api)
 - [功能介绍](#功能介绍)
     - [Job](#job)
