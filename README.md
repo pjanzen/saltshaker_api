@@ -9,9 +9,7 @@ Saltshaker is a Web-based configuration management management tool developed by 
 ## Installation manual
 
 - [Requirements](#Requirements)
-- [Installation](#Installation)
-- [Configure Salt Master](#Configure-salt-master)
-- [Restful API](#restful-api)
+- [Manual deployment](#Manual deployment)
 
 ## Requirements
 
@@ -22,73 +20,6 @@ Saltshaker is a Web-based configuration management management tool developed by 
 - Supervisor (version 4.0.0.dev0 does not support python3) Please use this command to install：pip install git+https://github.com/Supervisor/supervisor@master
 - GitLab >= 9.0
 
-## Installation
-
-准备工作（Related dependencies and configuration see saltshaker.conf）：
-- Run Redis： command：
-```sh
-$ docker run -p 0.0.0.0:6379:6379 --name saltshaker_redis -e REDIS_PASSWORD=saltshaker -d yueyongyue/redis:08
-```
-- Run RabbitMQ： command：
-        
-```sh
-$ docker run -d --name saltshaker_rabbitmq -e RABBITMQ_DEFAULT_USER=saltshaker -e RABBITMQ_DEFAULT_PASS=saltshaker -p 15672:15672 -p 5672:5672 rabbitmq:3-management
-```
-- Run Mysql： Initial username：admin password：admin
-```sh
-$ docker run -p 0.0.0.0:3306:3306 --name saltshaker_mysql -e MYSQL_ROOT_PASSWORD=123456 -d yueyongyue/saltshaker_mysql:10 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-```
-    
-### Install using Docker image
-1. Backend API service
-```sh
-$ docker run -d -p 0.0.0.0:9000:9000 --name saltshaker_api \
--e REDIS_HOST=192.168.10.100 \
--e REDIS_PORT=6379 \
--e REDIS_PASSWORD=saltshaker \
--e MYSQL_HOST=192.168.10.100 \
--e MYSQL_PORT=3306 \
--e MYSQL_USER=root \
--e MYSQL_PASSWORD=123456 \
--e MYSQL_DB=saltshaker_plus \
--e MYSQL_CHARSET=utf8 \
--e BROKER_HOST=192.168.10.100 \
--e BROKER_PORT=5672 \
--e BROKER_USER=saltshaker \
--e BROKER_PASSWORD=saltshaker \
--e FROM_ADDR=test@saltshaker.com \
--e MAIL_PASSWORD=123345 \
--e SMTP_SERVER=smtp.saltshaker.com \
-yueyongyue/saltshaker_api:03
-```
-- REDIS_HOST：       Redis host
-- REDIS_PORT：       Redis port
-- REDIS_PASSWORD：   Redis password
-- MYSQL_HOST：       Mysql host
-- MYSQL_PORT：       Mysql port
-- MYSQL_USER：       Mysql user
-- MYSQL_PASSWORD:    Mysql password
-- MYSQL_DB：         Mysql database
-- MYSQL_CHARSET：    Mysql character set
-- BROKER_HOST：      RabbitMQ host
-- BROKER_PORT：      RabbitMQ port
-- BROKER_USER：      RabbitMQ user
-- BROKER_PASSWORD：  RabbitMQ passwprd
-- FROM_ADDR：        MAIL FROM address
-- MAIL_PASSWORD：    Password (if needed)
-- SMTP_SERVER：      SMTP server
-
-2. Front-end service
-```sh
-$ docker run -d -p 0.0.0.0:80:80 --name saltshaker_frontend \
--e DOMAIN=192.168.10.100  \
--e API_ADDR=192.168.10.100 \
--e Nginx_PROXY_PASS=192.168.10.100:9000 \
-yueyongyue/saltshaker_frontend:01
-```
-- DOMAIN: Server hostname or ip (you need to use this to access the frondend with a browser)
-- API_ADDR： The address of the backend API server
-- Nginx_PROXY_PASS：The address of the backend API server plus port
 
 ### Manual deployment
 
