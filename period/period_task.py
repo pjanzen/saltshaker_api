@@ -17,6 +17,7 @@ from scheduler.period_scheduler import *
 
 logger = loggers()
 
+
 parser = reqparse.RequestParser()
 parser.add_argument("product_id", type=str, required=True, trim=True)
 parser.add_argument("name", type=str, required=True, trim=True)
