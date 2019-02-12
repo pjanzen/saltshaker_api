@@ -61,10 +61,10 @@ class Period(Resource):
                 count_status, count_result = db.select_count_by_id("period_result", result["id"])
                 if count_result is False:
                     return {"status": False, "message": count_result}, 500
-                # 数量小于15的时候避免等于负数
+
                 if int(count_result) < 15:
                     count_result = 15
-                # 获取最后15条数据
+
                 period_result_status, period_result_result = db.select(
                     "period_result", "where data -> '$.id'='%s' limit %s,%s"
                                      % (result["id"], int(count_result) - 15, 15))
@@ -77,7 +77,7 @@ class Period(Resource):
                     for a in period_audit_result:
                         result["audit"].append(a.get("result"))
                 db.close_mysql()
-                # 周期性Job审计信息超过10条后显示前10条及最后两条
+
                 if result["scheduler"] != "once":
                     if len(result["audit"]) > 10:
                         result_limit = result["audit"][0:10]
@@ -101,7 +101,7 @@ class Period(Resource):
             db.close_mysql()
             logger.error("Modify period_task error: %s" % select_result)
             return {"status": False, "message": select_result}, 500
-        # 删除定期任务的时候删除对应的调度
+
         if select_result["scheduler"] == "period":
             scheduler_result = scheduler_delete(period_id)
             if scheduler_result.get("status") is not True:
@@ -133,7 +133,7 @@ class Period(Resource):
         args["id"] = period_id
         period_task = args
         db = DB()
-        # 判断是否存在
+
         select_status, select_result = db.select_by_id("period_task", period_id)
         if select_status is not True:
             db.close_mysql()
@@ -142,7 +142,7 @@ class Period(Resource):
         if not select_result:
             db.close_mysql()
             return {"status": False, "message": "%s does not exist" % period_id}, 404
-        # 判断名字否已经存在
+
         status, result = db.select("period_task", "where data -> '$.name'='%s' and data -> '$.product_id'='%s'"
                                    % (args["name"], args["product_id"]))
         if status is True and result:
@@ -161,7 +161,7 @@ class Period(Resource):
             args["once"]["date"] = utc_to_local(args["once"]["date"])
         status, result = db.update_by_id("period_task", json.dumps(period_task, ensure_ascii=False), period_id)
         db.close_mysql()
-        # 修改调度任务
+
         if args["scheduler"] == "once" and args["once"]["type"] == "timing":
             run_date = args["once"]["date"].split(" ")[0] + " " + args["once"]["time"]
             scheduler_timing_modify(args["id"], args["product_id"], user, run_date)
@@ -235,18 +235,18 @@ class PeriodList(Resource):
         if status is True:
             if len(result) == 0:
                 audit_log(user, args["id"], "", "period_task", "add")
-                # 一次立即执行的直接扔给celery
+
                 if args["scheduler"] == "once" and args["once"]["type"] == "now":
                     period_task["action"] = "concurrent_play"
                     job.delay(args["id"], args["product_id"], user)
-                # 一次定时执行的扔给APScheduler,进行定时处理
+
                 if args["scheduler"] == "once" and args["once"]["type"] == "timing":
                     period_task["action"] = "scheduler_resume"
                     run_date = args["once"]["date"].split(" ")[0] + " " + args["once"]["time"]
                     scheduler_result = scheduler_timing_add(args["id"], args["product_id"], user, run_date)
                     if scheduler_result.get("status") is not True:
                         return {"status": False, "message": scheduler_result.get("message")}, 500
-                # 周期性的扔给APScheduler,进行定时处理
+
                 if args["scheduler"] == "period":
                     period_task["action"] = "scheduler_resume"
                     scheduler_result = scheduler_interval_add(args["id"], args["product_id"],
@@ -278,7 +278,7 @@ class Reopen(Resource):
         if status is True:
             if result:
                 if result["scheduler"] == "once" and result["once"]["type"] == "now":
-                    # 重开之前清空已经执行过的minion
+
                     result["count"] = 0
                     result["step"] = 0
                     audit = {
