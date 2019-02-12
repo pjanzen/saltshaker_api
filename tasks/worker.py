@@ -15,14 +15,16 @@ logger = loggers()
 
 def grains_worker(minion_list, product_id):
     salt_api = salt_api_for_product(product_id)
+
     if isinstance(salt_api, dict):
         return salt_api, 500
     db = DB()
     for minion in minion_list:
         select_status, select_result = db.select("grains", "where data -> '$.id'='%s' and data -> "
                                                            "'$.product_id'='%s'" % (minion, product_id))
-        print(minion)
+        logger.info("[{}] select_status: {} - select_result: {}".format(minion, select_status, select_result))
         grains = salt_api.grains(minion)
+        logger.info("grains_worker: {}".format(grains))
         if grains.get("status"):
             if grains.get("data").get(minion):
                 grains["data"][minion].update({"product_id": product_id})
@@ -98,7 +100,6 @@ def job_worker(period_id, product_id, user):
         grouping(concurrent, period_result, period_id, minion_list, salt_api, user, period_id)
 
 
-# 并行的job
 def grouping(concurrent, period_result, period_id, minion_list, salt_api, user, product_id):
     # 假如并行数大于minion的总数,range步长为minion长度，即一次全部运行
     # for m in period_result["executed_minion"]:
@@ -113,7 +114,7 @@ def grouping(concurrent, period_result, period_id, minion_list, salt_api, user, 
         p_status, p_result = db.select_by_id("period_task", period_id)
         if p_status is True and p_result:
             if p_result.get("action") == "concurrent_play" or p_result.get("action") == "scheduler_resume":
-                # 记录状态为第N组运行中
+
                 p_result["status"] = {
                     "id": 7,
                     "name": period_status.get(7) % count
@@ -125,25 +126,25 @@ def grouping(concurrent, period_result, period_id, minion_list, salt_api, user, 
                 }
                 insert_period_audit(period_id, audits)
                 db.update_by_id("period_task", json.dumps(p_result, ensure_ascii=False), period_id)
-                # 根据并行数，对minion进行切分
+
                 minion = minion_list[i:i + concurrent]
                 if period_result.get("execute") == "shell":
                     result = salt_api.shell_remote_execution(minion, period_result.get("shell"))
                 elif period_result.get("execute") == "sls":
                     result = salt_api.target_deploy(minion, period_result.get("sls"))
-                # 执行结果写入到period_result表
+
                 results = {
                     "time": int(time.time()),
                     "result": result,
                     "option": period_audit.get(7) % count
                 }
                 insert_period_result(period_id, results)
-                # 执行完命令更新状态
+
                 p_result["status"] = {
                     "id": 8,
                     "name": period_status.get(8) % count
                 }
-                # 执行审计写入到period_audit表
+
                 audits = {
                     "timestamp": int(time.time()),
                     "user": "机器人",
@@ -152,7 +153,7 @@ def grouping(concurrent, period_result, period_id, minion_list, salt_api, user, 
                 insert_period_audit(period_id, audits)
                 p_result["count"] = count + 1
                 p_result["step"] = step + concurrent
-                # 并行间隔时间，最后一次不等待
+
                 if concurrent < len(minion_list):
                     if i != list(range(0, len(minion_list), concurrent))[-1]:
                         time.sleep(int(p_result["interval"]))
@@ -164,7 +165,7 @@ def grouping(concurrent, period_result, period_id, minion_list, salt_api, user, 
                 db.update_by_id("period_task", json.dumps(p_result, ensure_ascii=False), period_id)
                 db.close_mysql()
                 # audit_log(user, minion, product_id, "minion", "shell")
-    # 不同调度方式使用不同的状态显示
+
     if p_result["scheduler"] == "period":
         p_result["status"] = {
             "id": 9,
@@ -192,7 +193,6 @@ def grouping(concurrent, period_result, period_id, minion_list, salt_api, user, 
     db.close_mysql()
 
 
-# 非并行的job
 def no_concurrent(period_result, period_id, minion_list, salt_api, user, product_id):
     db = DB()
     period_result["status"] = {
@@ -240,7 +240,6 @@ def no_concurrent(period_result, period_id, minion_list, salt_api, user, product
     audit_log(user, minion_list, product_id, "minion", "shell")
 
 
-# 获取period和minion
 def get_period(period_id, product_id):
     db = DB()
     status, period_result = db.select_by_id("period_task", period_id)
@@ -262,10 +261,8 @@ def get_period(period_id, product_id):
         return period_result, minion_list, salt_api
     else:
         logger.error("Get period and minion error: %s" % period_result)
-        raise
 
 
-# 结果信息放到period_result表
 def insert_period_result(period_id, period_result):
     db = DB()
     results = {
@@ -278,7 +275,6 @@ def insert_period_result(period_id, period_result):
         logger.error("Insert period result error: %s" % result)
 
 
-# 审计信息放到period_audit表
 def insert_period_audit(period_id, period_audits):
     db = DB()
     results = {

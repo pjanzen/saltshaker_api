@@ -3,6 +3,9 @@ import urllib.request
 import urllib.parse
 import json
 import requests
+from common.log import loggers
+
+logger = loggers()
 
 
 class SaltAPI(object):
@@ -17,6 +20,7 @@ class SaltAPI(object):
     def get_token_id(self):
         # user login and get token id
         params = {'eauth': 'pam', 'username': self.__user, 'password': self.__password}
+        print(params)
         obj = urllib.parse.urlencode(params).encode('utf-8')
         url = str(self.__url) + '/login'
         req = urllib.request.Request(url, obj)
@@ -28,9 +32,13 @@ class SaltAPI(object):
             return ""
         return token_id
 
-    def post_request(self, data, prefix='/'):
+    def post_request(self, data, prefix='/', send_token=True):
         url = str(self.__url) + prefix
-        headers = {'X-Auth-Token': self.__token_id, 'Content-type': 'application/json'}
+        if send_token:
+            headers = {'X-Auth-Token': self.__token_id, 'Content-type': 'application/json'}
+        else:
+            headers = {'Content-type': 'application/json'}
+        print("Headers: {}".format(headers))
         try:
             # 解析成json
             data = bytes(json.dumps(data), 'utf8')
@@ -38,6 +46,7 @@ class SaltAPI(object):
             opener = urllib.request.urlopen(req, timeout=180)
             content = json.loads(opener.read())
         except Exception as e:
+            print("[{}] post_request exception: {}".format(__name__, e))
             return str(e)
         return content
 
@@ -140,12 +149,13 @@ class SaltAPI(object):
     def grains(self, tgt):
         # Grains.items
         params = {'client': 'local', 'tgt': tgt, 'fun': 'grains.items'}
-        content = self.post_request(params)
+        content = self.post_request(params, send_token=False)
         if isinstance(content, dict):
             ret = content['return'][0]
+            logger.info("Grains data: {}".format(ret))
             return {"status": True, "message": "", "data": ret}
         else:
-            return {"status": False, "message": "Salt API Error : " + content}
+            return {"status": False, "message": "[GRAINS] Salt API Error : " + content}
 
     def target_remote_execution(self, tgt, fun, arg):
         # Use targeting for remote execution
@@ -250,6 +260,7 @@ class SaltAPI(object):
     def runner_status(self, arg):
         # Return minion status
         params = {'client': 'runner', 'fun': 'manage.' + arg}
+        print("[{}] params: {}".format(__name__, params))
         content = self.post_request(params)
         if isinstance(content, dict):
             jid = content['return'][0]

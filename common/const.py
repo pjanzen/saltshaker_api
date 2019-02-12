@@ -8,30 +8,30 @@ role_dict = {
 }
 
 period_status = {
-    0: "创建中",
-    1: "等待运行",
-    2: "运行中",
-    3: "完成",
-    4: "失败",
-    5: "被暂停",
-    6: "等待周期",
-    7: "第%s组运行中",
-    8: "第%s组完成",
-    9: "周期运行中",
-    10: "计划任务运行中",
-    11: "周期暂停"
+    0: "Creating",
+    1: "Waiting to run",
+    2: "Running",
+    3: "Complete",
+    4: "Failure",
+    5: "Suspended",
+    6: "Waiting cycle",
+    7: "The %s group is running",
+    8: "The %s group is completed",
+    9: "Periodic operation",
+    10: "Scheduled task running",
+    11: "Cycle pause"
 }
 
 period_audit = {
-    0: "创建了Job",
-    1: "重开了Job",
-    2: "继续了并行",
-    3: "完成了Job",
-    4: "失败了Job",
-    5: "暂停了并行",
-    7: "第%s组开始",
-    8: "第%s组完成",
-    9: "全部开始",
-    10: "继续了周期",
-    11: "暂停了周期"
+    0: "Created a job",
+    1: "Reopened the Job",
+    2: "Continued parallelism",
+    3: "Completed the job",
+    4: "Failed Job",
+    5: "Parallel suspended",
+    7: "The first %s group begins",
+    8: "The %s group is completed",
+    9: "Start all",
+    10: "Continued cycle",
+    11: "Suspended cycle"
 }

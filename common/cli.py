@@ -43,32 +43,32 @@ def initialize(username, password):
     role = [
         {
             "id": uuid_prefix("r"),
-            "name": "超级管理员",
-            "description": "所有权限",
+            "name": "Super administrator",
+            "description": "All permissions",
             "tag": role_dict["superuser"]
         },
         {
             "id": uuid_prefix("r"),
-            "name": "普通用户",
-            "description": "默认普通用户",
+            "name": "General user",
+            "description": "Default normal user",
             "tag": role_dict["common_user"]
         },
         {
             "id": uuid_prefix("r"),
-            "name": "产品管理员",
-            "description": "管理产品权限",
+            "name": "Product manager",
+            "description": "Manage product permissions",
             "tag": role_dict["product"]
         },
         {
             "id": uuid_prefix("r"),
-            "name": "用户管理员",
-            "description": "管理用户权限",
+            "name": "User administrator",
+            "description": "Manage user permissions",
             "tag": role_dict["user"]
         },
         {
             "id": uuid_prefix("r"),
-            "name": "访问控制管理员",
-            "description": "管理访问控制列权限",
+            "name": "Access control administrator",
+            "description": "Manage access control column permissions",
             "tag": role_dict["acl"]
         },
             ]

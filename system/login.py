@@ -5,7 +5,6 @@ from common.sso import create_token, verify_password, menu_list
 import configparser
 import os
 
-
 logger = loggers()
 
 config = configparser.ConfigParser()
@@ -33,4 +32,4 @@ class Login(Resource):
                                                             }}
         else:
             logger.info("%s login failure: " % args["username"])
-            return {"status": False, "message": "用户名或者密码错误"}
+            return {"status": False, "message": "Username or password is incorrect"}

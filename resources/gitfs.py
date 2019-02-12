@@ -26,6 +26,7 @@ class BranchList(Resource):
     def get(self):
         args = parser.parse_args()
         project, _ = gitlab_project(args["product_id"], args["project_type"])
+        print("Project: {} rest: {}".format(project, _))
         if isinstance(project, dict):
             return project, 500
         else:
