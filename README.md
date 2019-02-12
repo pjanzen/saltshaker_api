@@ -2,9 +2,9 @@
 
 Saltshaker is a Web-based configuration management management tool developed by Saltstack. It simplifies the daily use of saltstack, enriches the functions of saltstack, and supports multi-master management. This project is Saltshaker's backend Restful API, which needs to be combined with front-end projects.
 ## Architecture diagram
-![image](https://github.com/yueyongyue/saltshaker_api/blob/master/screenshots/Saltshaker_Plus.jpg)
+![image](https://github.com/pjanzen/saltshaker_api/blob/master/screenshots/Saltshaker_Plus.jpg)
 ## Dashboard
-![image](https://github.com/yueyongyue/saltshaker_api/blob/master/screenshots/dashboard.png)
+![image](https://github.com/pjanzen/saltshaker_api/blob/master/screenshots/dashboard.png)
 
 ## Installation manual
 
@@ -12,29 +12,6 @@ Saltshaker is a Web-based configuration management management tool developed by 
 - [installation](#installation)
 - [Configure Salt Master](#Configure-salt-master)
 - [Restful API](#restful-api)
-- [功能介绍](#功能介绍)
-    - [Job](#job)
-        - [Job创建](#job创建)
-        - [Job历史](#job历史)
-        - [Job管理](#job管理)
-    - [Minion管理](#minion管理)
-        - [状态信息](#状态信息)
-        - [Key管理](#key管理)
-        - [Grains](#grains)
-    - [主机管理](#主机管理)
-    - [分组管理](#分组管理)
-    - [文件管理](#文件管理)
-    - [执行命令](#执行命令)
-        - [Shell](#shell)
-        - [State](#state)
-        - [Pillar](#pillar)
-    - [产品线管理](#产品线管理)
-    - [ACL管理](#acl管理)
-    - [系统管理](#acl管理)
-        - [用户管理](#用户管理)
-        - [角色管理](#角色管理)
-        - [操作日志](#操作日志)
-        - [系统工具](#系统工具)
 
 ## Requirements
 
