@@ -8,8 +8,8 @@ Saltshaker is a Web-based configuration management management tool developed by 
 
 ## Installation manual
 
-- [required](#required)
-- [installation](#installation)
+- [Requirements](#Requirements)
+- [Installation](#Installation)
 - [Configure Salt Master](#Configure-salt-master)
 - [Restful API](#restful-api)
 
