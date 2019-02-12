@@ -6,7 +6,6 @@ import time
 logger = loggers()
 
 
-# 添加一次性定时执行
 def scheduler_timing_add(period_id, product_id, user, run_date):
     # run_date="2018-07-04 14:01:00"
     try:
@@ -18,7 +17,6 @@ def scheduler_timing_add(period_id, product_id, user, run_date):
         return {"status": False, "message": str(e)}
 
 
-# 修改一次性定时执行
 def scheduler_timing_modify(period_id, product_id, user, run_date):
     # run_date="2018-07-04 14:01:00"
     try:
@@ -27,7 +25,7 @@ def scheduler_timing_modify(period_id, product_id, user, run_date):
         return {"status": True, "message": ""}
     except Exception as e:
         logger.error("Modify timing scheduler error: %s" % e)
-        # 如果之前的scheduler已经不存在，重新添加定时任务
+
         scheduler_result = scheduler_timing_add(period_id, product_id, user, run_date)
         if scheduler_result.get("status") is not True:
             return {"status": False, "message": scheduler_result.get("message")}
@@ -35,7 +33,6 @@ def scheduler_timing_modify(period_id, product_id, user, run_date):
             return {"status": True, "message": ""}
 
 
-# 添加周期间隔任务
 def scheduler_interval_add(period_id, product_id, user, run_interval, interval):
     if interval == "second":
         try:
@@ -81,7 +78,6 @@ def scheduler_interval_add(period_id, product_id, user, run_interval, interval):
         return {"status": False, "message": "No interval specified"}
 
 
-# 修改周期间隔任务
 def scheduler_interval_modify(period_id, product_id, user, run_interval, interval):
     if interval == "second":
         try:
@@ -147,7 +143,6 @@ def scheduler_interval_modify(period_id, product_id, user, run_interval, interva
         return {"status": False, "message": "No interval specified"}
 
 
-# 删除任务
 def scheduler_delete(period_id):
     try:
         scheduler.delete_job(id=period_id)
@@ -157,7 +152,6 @@ def scheduler_delete(period_id):
         return {"status": False, "message": str(e)}
 
 
-# 暂停任务
 def scheduler_pause(period_id):
     try:
         scheduler.pause_job(id=period_id)
@@ -167,7 +161,6 @@ def scheduler_pause(period_id):
         return {"status": False, "message": str(e)}
 
 
-# 恢复任务
 def scheduler_resume(period_id):
     try:
         scheduler.resume_job(id=period_id)
