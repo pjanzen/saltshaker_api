@@ -10,7 +10,7 @@ Saltshaker is a Web-based configuration management management tool developed by 
 
 - [required](#required)
 - [installation](#installation)
-- [Configure Salt Master](#configure-salt-master)
+- [Configure Salt Master](#Configure-salt-master)
 - [Restful API](#restful-api)
 - [功能介绍](#功能介绍)
     - [Job](#job)
@@ -114,28 +114,45 @@ yueyongyue/saltshaker_frontend:01
 - API_ADDR： 后端API服务器的地址
 - Nginx_PROXY_PASS：后端API服务器的地址加端口
 
-### 手动部署
-安装Saltshaker，你需要首先准备Python环境
+### Manual deployment
 
-1. 下载:
+To install Saltshaker, you need to prepare the Python environment first.
 
+1. Create saltshaker home and clone repo:
     ```sh
-    $ git clone https://github.com/yueyongyue/saltshaker_api.git
+    $ cd /opt
     ```
 
-2. 安装依赖:
+    ```sh
+    $ git clone https://github.com/pjanzen/saltshaker_api.git
+    ```
+
+2. Install python requirements:
+    You can run this from an python virtual env. If you choose to do so, create it first.
+    ```sh
+    $ python3 -m venv /opt/salt/virtual_envs/python3
+    ```
+
+    ```sh
+    $ source /opt/salt/virtual_envs/bin/activate
+    ```
+
+    ```sh
+    $ cd /opt/saltshaker_api
+    ```
+
 
     ```sh
     $ pip install -r requirements.txt
     ```
 
-3. 导入FLASK_APP环境变量以便使用Flask CLI工具,路径为所部署的app的路径
+3. Set the FLASK_APP environment variable to use the Flask CLI tool, the path to the path of the deployed app
 
     ```sh
     $ export FLASK_APP=$Home/saltshaker_api/app.py
     ```
 
-4. 初始化数据库表及相关信息，键入超级管理员用户名和密码（数据库的配置见saltshaker.conf，请确保数据库可以连接并已经创建对应的数据库）
+4. Initialize the database table and related information, type the super administrator username and password (see the saltshaker.conf for the configuration of the database, please ensure that the database can be connected and the corresponding database has been created)
 
     ```sh
     $ mkdir /var/log/saltshaker_plus
@@ -143,7 +160,7 @@ yueyongyue/saltshaker_frontend:01
     ```
     
     ```
-    输出如下：
+    Output：
         Enter the initial administrators username [admin]: admin
         Enter the initial Administrators password: 
         Repeat for confirmation: 
@@ -161,48 +178,48 @@ yueyongyue/saltshaker_frontend:01
         Create period_result table is successful
         Create period_audit table is successful
         Create sls table is successful
-        Init 超级管理员 role successful
-        Init 普通用户 role successful
-        Init 产品管理员 role successful
-        Init 用户管理员 role successful
-        Init 访问控制管理员 role successful
+        Init super administrator role successful
+        Init general user role successful
+        Init product manager role successful
+        Init user administrator role successful
+        Init access control administrator role successful
         Init user successful
         Successful
     ```
-    也可以直接导入数据库文件saltshaker_plus.sql, 初始化用户名：admin 密码：admin
+    You can also directly import the database file saltshaker_plus.sql, initial username: admin password: admin
     ```sh
     mysql> source $HOME/saltshaker_api/saltshaker_plus.sql;
     ```
 
-5. 启动Flask App, 成功启动后会启动9000的端口
+5. Start Flask App, will listen at port 9000 after succesfull startup.
     - 开发模式
     
         ```sh
         $ python $Home/saltshaker_api/app.py
         ```
-    - Gunicorn模式
+    - Gunicorn mode
     
         ```sh
         $ cd $Home/saltshaker_api/ && gunicorn -c gun.py app:app
         ```
-    - 生产模式
+    - Production mode
     
         ```sh
-        supervisord.conf 里面的directory配置项修改为自己对应的代码路径
+        supervisord.conf change config to adapt your setup
         $ /usr/local/bin/supervisord -c $Home/saltshaker_api/supervisord.conf
         ```
     
-6. 启动Celery （使用生产模式的忽略此步骤，因为在Supervisor里面已经启动Celery）
+6. Start celery （Ignore this step when you use supervisord）
 
     ```sh
     $ cd $Home/saltshaker_api/ && celery -A app.celery worker --loglevel=info
     ```
-7. 结合前端项目
+7. Combine front-end projects
     ```
-    https://github.com/yueyongyue/saltshaker_frontend
+    https://github.com/pjanzen/saltshaker_frontend
     ```
  
-## 配置Salt Master （需要安装 salt-api）
+## Configure Salt Master （Need to install salt-api）
 
 1. 配置saltstack api
     拷贝 saltapi.conf 到 master配置文件下，开启salt-api的Restful接口
