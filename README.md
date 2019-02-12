@@ -36,35 +36,34 @@ Saltshaker is a Web-based configuration management management tool developed by 
         - [操作日志](#操作日志)
         - [系统工具](#系统工具)
 
-## 要求
+## Requirements
 
 - Python >= 3.6
-- Mysql >= 5.7.8 （支持Json的Mysql都可以）
-- Redis（无版本要求）
-- RabbitMQ （无版本要求）
-- Python 软件包见requirements.txt
-- Supervisor (4.0.0.dev0 版本 默认pip安装的不支持python3) 请使用此命令安装：pip install git+https://github.com/Supervisor/supervisor@master
+- Mysql >= 5.7.8 （With json support）
+- Redis
+- RabbitMQ
+- Supervisor (version 4.0.0.dev0 does not support python3) Please use this command to install：pip install git+https://github.com/Supervisor/supervisor@master
 - GitLab >= 9.0
 
-## 安装
+## Installation
 
-准备工作（相关依赖及配置见saltshaker.conf）：
-- 安装Redis： 建议使用Docker命令如下：
+准备工作（Related dependencies and configuration see saltshaker.conf）：
+- Run Redis： command：
 ```sh
 $ docker run -p 0.0.0.0:6379:6379 --name saltshaker_redis -e REDIS_PASSWORD=saltshaker -d yueyongyue/redis:08
 ```
-- 安装RabbitMQ： 建议使用Docker命令如下：
+- Run RabbitMQ： command：
         
 ```sh
 $ docker run -d --name saltshaker_rabbitmq -e RABBITMQ_DEFAULT_USER=saltshaker -e RABBITMQ_DEFAULT_PASS=saltshaker -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```
-- 安装Mysql： 初始化系统管理员 用户名：admin 密码：admin
+- Run Mysql： Initial username：admin password：admin
 ```sh
 $ docker run -p 0.0.0.0:3306:3306 --name saltshaker_mysql -e MYSQL_ROOT_PASSWORD=123456 -d yueyongyue/saltshaker_mysql:10 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 ```
     
-### 使用Docker镜像安装
-1. 后端API服务
+### Install using Docker image
+1. Backend API service
 ```sh
 $ docker run -d -p 0.0.0.0:9000:9000 --name saltshaker_api \
 -e REDIS_HOST=192.168.10.100 \
@@ -85,24 +84,24 @@ $ docker run -d -p 0.0.0.0:9000:9000 --name saltshaker_api \
 -e SMTP_SERVER=smtp.saltshaker.com \
 yueyongyue/saltshaker_api:03
 ```
-- REDIS_HOST：       Redis主机地址
-- REDIS_PORT：       Redis端口
-- REDIS_PASSWORD：   Redis密码
-- MYSQL_HOST：       Mysql数据库地址
-- MYSQL_PORT：       Mysql端口
-- MYSQL_USER：       Mysql用户名
-- MYSQL_PASSWORD:    Mysql密码
-- MYSQL_DB：         Mysql数据库名
-- MYSQL_CHARSET：    Mysql字符集
-- BROKER_HOST：      RabbitMQ地址
-- BROKER_PORT：      RabbitMQ端口
-- BROKER_USER：      RabbitMQ用户
-- BROKER_PASSWORD：  RabbitMQ密码
-- FROM_ADDR：        邮箱地址用于发生邮件
-- MAIL_PASSWORD：    邮箱密码
-- SMTP_SERVER：      SMTP服务器地址
+- REDIS_HOST：       Redis host
+- REDIS_PORT：       Redis port
+- REDIS_PASSWORD：   Redis password
+- MYSQL_HOST：       Mysql host
+- MYSQL_PORT：       Mysql port
+- MYSQL_USER：       Mysql user
+- MYSQL_PASSWORD:    Mysql password
+- MYSQL_DB：         Mysql database
+- MYSQL_CHARSET：    Mysql character set
+- BROKER_HOST：      RabbitMQ host
+- BROKER_PORT：      RabbitMQ port
+- BROKER_USER：      RabbitMQ user
+- BROKER_PASSWORD：  RabbitMQ passwprd
+- FROM_ADDR：        MAIL FROM address
+- MAIL_PASSWORD：    Password (if needed)
+- SMTP_SERVER：      SMTP server
 
-2. 前端服务
+2. Front-end service
 ```sh
 $ docker run -d -p 0.0.0.0:80:80 --name saltshaker_frontend \
 -e DOMAIN=192.168.10.100  \
@@ -110,9 +109,9 @@ $ docker run -d -p 0.0.0.0:80:80 --name saltshaker_frontend \
 -e Nginx_PROXY_PASS=192.168.10.100:9000 \
 yueyongyue/saltshaker_frontend:01
 ```
-- DOMAIN: 部署服务器的IP地址（最终通过这个地址进行浏览器访问）
-- API_ADDR： 后端API服务器的地址
-- Nginx_PROXY_PASS：后端API服务器的地址加端口
+- DOMAIN: Server hostname or ip (you need to use this to access the frondend with a browser)
+- API_ADDR： The address of the backend API server
+- Nginx_PROXY_PASS：The address of the backend API server plus port
 
 ### Manual deployment
 
@@ -192,8 +191,18 @@ To install Saltshaker, you need to prepare the Python environment first.
     ```
 
 5. Start Flask App, will listen at port 9000 after succesfull startup.
-    - 开发模式
-    
+    - Development mode
+
+        ```sh
+        $ cd /opt/saltshaker_api
+        $ export HOME=$(pwd)
+        $ export $FLAKSAPP=$HOME/app.py
+        ```
+        activate virtual_env when you use it.
+        ```sh
+        $ source ../virtual_env/python3/bin/activate
+        ```
+
         ```sh
         $ python $Home/saltshaker_api/app.py
         ```
